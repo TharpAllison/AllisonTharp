@@ -1,0 +1,50 @@
+# ggplot2 plots AAT 011024
+library("ggplot2")
+library("stats")
+
+# Cumulative exposure vs. response, rodent toxicological data
+ggplot(Data4, aes(x= Cumulative_Exposure, y= Response)) +
+  ggtitle("Cumulative exposure to ZnO and mean PMN responses") +
+  ylab("Response (% PMN in BAL)") +
+  xlab(expression(paste("Cumulative exposure (mg/", m^{3},"*hour)"))) +
+  theme(axis.text=element_text(size=8),
+        axis.title=element_text(size=8),
+        plot.title=element_text(size=10),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=8),
+        plot.subtitle=element_text(size=6),
+        panel.background = element_rect(fill = "#FFFFFF" ),
+        panel.grid.major = element_line(color = 'lightgrey'),
+        panel.grid.minor= element_line(color= 'lightgrey')) +
+  labs(subtitle= "From Ho et al. 2011, Sprague Dawley male mice, 24-hours post-exposure", 
+       size=8, shape= "Diameter (nm)",
+       color= "Study") +
+  geom_point(aes(shape= Other_Diameter, color= Author_Year), size=2) +
+  geom_errorbar(aes(ymin=CI_Lower, ymax=CI_Upper), size=0.5, width=2)
+
+# Investigating differences between modified and unmodified MWCNTs after in-vitro
+# exposure to MWCNTs
+ggplot(MWCNT, aes(x= Cell_type, y= BMD, group= Material)) +
+  ggtitle("Benchmark dose and modification of MWCNTs by cell type") +
+  ylab("Benchmark dose (ug/mL)") +
+  xlab("Cell type") +
+  theme(legend.key.size = grid::unit(width_scale/80, "inch"),
+        axis.text.x = element_text(angle = 23),
+        axis.text=element_text(size=5),
+        axis.title=element_text(size=8),
+        plot.title=element_text(size=8),
+        legend.text=element_text(size=8),
+        legend.title=element_text(size=8),
+        panel.background = element_rect(fill = "#FFFFFF" ),
+        panel.grid.major = element_line(color = 'lightgrey'),
+        panel.grid.minor= element_line(color= 'lightgrey'),
+        plot.subtitle=element_text(size=6, color="black")) +
+  ylim(0, 110) +
+  labs(subtitle= "From selected in-vitro studies", size=8) +
+  geom_jitter(aes(color= Modification_status, shape= PE_Duration_Hours), position= pd)
+
+# Kruskal-Wallis test- to test significant differences between the median 
+# benchmark doses of modified and unmodified materials.
+kruskal.test(BMD ~ Modification_status, data= MWCNT)
+Comparison= subset(MWCNT, MWCNT$Endpoint== "IL-1B" & MWCNT$Exposure_Duration_Hours== "24" & MWCNT$Cell_type== "THP-1")
+kruskal.test(BMD ~ Modification_status, data=Comparison)
