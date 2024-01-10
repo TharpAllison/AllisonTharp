@@ -7,7 +7,7 @@ A collection of projects from my experience as a Biostatistics/Bioinformatics fe
 **Model Averaging with ToxicR (R):** Model averaging continuous dose-response data for the                                                     estimation of benchmark doses.
 <br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Package used:</ins> ToxicR
 
-**ZnO Plots and Tests (R):** Investigation of human and rodent inhalational zinc oxide exposure. Detailed and interactive exposure vs. response plots and a method for combining sample standard deviations.                                  
+**ZnO Plots and Tests (R):** Investigation of human and rodent inhalational zinc oxide exposure. Detailed and interactive exposure vs. response plots and a method for combining sample standard deviations.
 <br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Packages used include:</ins> ggplot2, stats, plotly
 
 **MWCNT Plots and Tests (R):** Investigation of rodent inhalational exposure and in-vitro cellular exposure to multiwalled carbon nanotubes (MWCNTs). Detailed plots of exposure vs. response and benchmark dose vs. cell type, and Kruskal-Wallis tests for significant differences between benchmark doses.
