@@ -1,0 +1,43 @@
+# Zinc oxide Plots and Tests AAT 011024
+library("ggplot2")
+library("stats")
+library("plotly")
+
+# Combine sample standard deviations- to combine two dose-response relationships.
+combinedSampleVariance <- function (n, m, var1, var2, mean1, mean2) {
+  (((n-1)*var1 + (m-1)*var2) / (n+m-1)) + ( (n*m*(mean1-mean2)^2)/((n+m)*(n+m-1)) ) 
+}
+var.combined <- combinedSampleVariance(4,4,(0.88^2),(0.98^2),1.04, 0.95)
+sd.combined <- sqrt(var.combined) # 0.86
+
+# Cumulative exposure vs. response, rodent toxicological data:
+ggplot(Data6, aes(x= Cumulative_Jitter, y= Response)) +
+  ggtitle("Cumulative exposure to ZnO and mean PMN responses") +
+  ylab("Response (% PMN in BAL)") +
+  xlab(expression(paste("Cumulative exposure (mg/", m^{3},"*hour)"))) +
+  theme(axis.text=element_text(size=8),
+        axis.title=element_text(size=6),
+        plot.title=element_text(size=10),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=6),
+        plot.subtitle=element_text(size=6),
+        panel.background = element_rect(fill = "#FFFFFF" ),
+        panel.grid.major = element_line(color = 'lightgrey'),
+        panel.grid.minor= element_line(color= 'lightgrey')) +
+  labs(subtitle= "Horizontal jitter (+/- 0.5) on points", size=8, 
+       shape= "Post-exposure duration", color= "Study") +
+  geom_point(aes(shape= Postexposure, color= Details), size=2) +
+  geom_errorbar(aes(ymin=CI_Lower, ymax=CI_Upper), size=0.5, width=20) +
+  facet_zoom(x= Data6$Cumulative_Jitter== 1274, horizontal= TRUE, zoom.size= 0.25) 
+
+# Interactive plotting with plotly, human and rodent toxicological data:
+Subtitle= c("Data from rodent BAL, except where noted with a '*', indicating human BAL")
+
+fig= plot_ly(data= Data, x=~LOEL, y=~Endpoint, type= 'scatter',  color= ~Study, 
+             text = ~paste("Exposure duration (hours):", Exposure, 'Post-exposure duration (hours):', 
+                           Postexposure, 'Human or rodent BAL:', Human_Rodent))
+fig <- fig %>% layout(type= 'scatter',
+                      color= 'Dark2',
+                      title = 'LOELs by Endpoint- Human and Rodent ZnO Data',
+                      legend = list(title=list(text='Study')),
+                      xaxis= list(title= list(text= 'Potential LOEL (mg/m^3)')))
