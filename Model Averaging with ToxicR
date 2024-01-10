@@ -1,0 +1,27 @@
+# Model-averaging with ToxicR AAT 011024
+library("ToxicR")
+library("ggplot2")
+
+# Preparing the data:
+cont_data <- matrix(0,nrow=7,ncol=4)
+colnames(cont_data) <- c("Dose","Mean","N","SD")
+cont_data[,1] <- c(0, 2.4, 3.7, 7.2, 11.5, 12.1, 45.2)
+cont_data[,2] <- c(0.995, 4.16, 16.63, 17.68, 38.55, 43.04, 56.56)
+cont_data[,3] <- c(8, 6, 6, 6, 6, 6, 6)
+cont_data[,4]<-  c(0.86, 1.25, 4.7, 1.83, 1.66, 5.79, 6.37)
+Y <- cont_data[,2:4]
+
+# Fit the continuous data to a model.
+ma_sd_mcmc <- ma_continuous_fit(cont_data[,"Dose"],Y, fit_type="mcmc",
+                                BMR_TYPE="sd",BMR = 1,samples = 50000)
+summary(ma_sd_mcmc)
+
+# Plot the model-averaged fit of the data.
+p= plot(ma_sd_mcmc)
+xlab= expression(paste("Exposure (mg/", m^{3},")"))
+p$labels$title <- "Exposure to ZnO and mean responses (from Ho et al. 2011, 24h
+post-exposure in rats, model-averaged fit, BMR of +4% PMNs)"
+p$labels$x= xlab
+p$labels$y= "Response (% PMNs in BAL)"
+
+plot(p)
