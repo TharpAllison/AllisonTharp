@@ -1,0 +1,48 @@
+# Exploratory Data Analysis with Python
+# Using OSHA noise exposure data
+
+# 011024 AAT
+
+# Load required modules
+import os
+import pandas as pd
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as pp
+import seaborn
+
+# Check/set current working directory
+os.chdir('C:\\Users\\tve3\\OneDrive - CDC\\My_DSU')
+os.getcwd()
+
+# Import noise and solvent data
+MyData= pd.read_excel("Data_AAT.xlsx")
+MyData.head()
+
+# Initial summary statistics
+MyData.dtypes
+MyData.describe()
+
+# Variable transformations
+MyData['NAICS_CODE']= MyData['NAICS_CODE'].astype('category')
+MyData['EXPOSURE_RECORD']= MyData['EXPOSURE_RECORD'].astype('category')
+MyData['PEL']= MyData['PEL'].astype('category')
+​
+MyData['SAMPLING_DATE']= pd.to_datetime(MyData['SAMPLING_DATE'],
+                                       format= '%Y%m%d')
+MyData.dtypes
+
+# Subset noise exposures
+# Subset by selecting SUBSTANCE_CODEs 8110, 8111, and 8130 for noise exposure
+Noise= MyData.loc[MyData['SUBSTANCE_CODE'].isin(['8110', '8111', '8130'])]
+​
+# Subset further by noise exposures measured in decibels
+NoiseDecibel= MyData.loc[MyData['UNIT_DESC'].isin(['DECIBEL', 'DECIBEL ON THE A WEIGHTED SCALE'])]
+
+# Remove rows with missing Permissible Exposure Limits (PELs) or missing exposure concentrations
+Noise.dropna(subset=['PEL', 'EXPOSURE_CONCENTRATION'])
+
+# Use .groupby to get summary stats on mean exposure concentratin by industry (NAICS code)
+Noise \
+    .groupby('NAICS_CODE')['EXPOSURE_CONCENTRATION'] \
+    .mean()
