@@ -17,3 +17,8 @@ A collection of projects from my experience as a Biostatistics/Bioinformatics fe
 <br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Packages used include:</ins> seaborn, numpy, pandas, and matplotlib 
 <br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Modules used include:</ins> os and matplotlib.pyplot
 <br>
+
+**Python Data Cleaning (Python):** Data cleaning of OSHA noise and solvent exposure data.
+<br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Packages used include:</ins> seaborn, numpy, pandas, and matplotlib
+<br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Modules used include:</ins> os, datetime
+<br>
