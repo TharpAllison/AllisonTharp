@@ -2,7 +2,7 @@
 A collection of projects from my experience as a Biostatistics/Bioinformatics fellow at NIOSH. 
 
 <br>**Data Cleaning (R):** Data cleaning of OSHA noise and solvent exposure data and audiometric hearing loss data.
-<br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Packages used include:</ins> tidyverse, lubridate, ggplot2, tidyr, and patchwork
+<br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>R packages used include:</ins> tidyverse, lubridate, ggplot2, tidyr, and patchwork
 
 **Model Averaging with ToxicR (R):** Model averaging continuous dose-response data for the                                                     estimation of benchmark doses.
 <br>&nbsp;&nbsp;&nbsp;&nbsp; <ins>Package used:</ins> ToxicR
