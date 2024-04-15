@@ -1,0 +1,83 @@
+# Python Data Cleaning
+
+# Convert 'SAMPLING_DATE' to datetime format.
+Noise['SAMPLING_DATE']= pd.to_datetime(Noise['SAMPLING_DATE'],
+                                       format= '%Y%m%d')
+Noise.dtypes
+
+# Create a user-defined function to filter out PEL vs. Action level noise exposures.
+# Define function to assign labels corresponding to noise substance codes
+def f(row):
+    if row['SUBSTANCE_CODE'] == '8110':
+        val = 'PEL'
+    elif row['SUBSTANCE_CODE'] == '8111':
+        val = 'AL'
+    else:
+        val = 'NA'
+    return val
+
+# Create new column 'NOISE_PEL_OR_AL' using the function above.
+Noise['NOISE_PEL_OR_AL'] = Noise.apply(f, axis=1)
+
+# Check to see it worked
+Noise['NOISE_PEL_OR_AL'].unique()
+
+# Clean up the 'SUBSTANCE_NAME' column.
+# Clean up SUBSTANCE_NAME by creating SUBSTANCE_CLEAN
+Noise["SUBSTANCE_CLEAN"]= np.where(Noise["SUBSTANCE_NAME"].str.contains('NOISE'), "Noise", 
+                                   np.where(Noise["SUBSTANCE_NAME"].str.contains("TOLUEN"), "Toluene", 
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("XYLEN"), "Xylene", 
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("ARSENATE"), "Lead arsenate",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("TETRAE"), "Tetraethyl lead",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("LEAD"), "Lead", 
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("STYR"), "Styrene",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("CARBO"), "Carbon monoxide",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("ETHYL B"), "Ethyl benzene",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("ARSENIC"), "Arsenic",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("HEX"), "Hexane",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("TRIC"), "Trichloroethylene",
+                                    np.where(Noise["SUBSTANCE_NAME"].str.contains("MERC"), "Mercury", "NA")))))))))))))
+
+# Cleaning up the 'UNIT_DESC' column.
+# Convert 'PERCENT' to dB
+# Convert 'PARTS PER MILLION', 'MICROGRAMS PER CUBIC METER', 'MICROGRAM PER LITER', and 'MILLIGRAMS PER LITER' to mg/m^3
+# PARTS PER MILLION: Conc (mg/m3) = (ppm x MW)/24.45
+# MICROGRAMS PER CUBIC METER: EXPOSURE_CONCENTRATION (ug/m^3) / 1000
+# MICROGRAM PER LITER: ug/L = mg/m^3, no conversion needed- just change unit label
+# MILLIGRAMS PER LITER: EXPOSURE_CONCENTRATION (mg/L) / 1000
+
+def my_function(row):
+    if row["UNIT_DESC"] == "PERCENT": 
+      return row["PEL_CLEAN"]/100*row["EXPOSURE_CONCENTRATION"]
+    elif row["UNIT_DESC"] == "PARTS PER MILLION":
+      return row["EXPOSURE_CONCENTRATION"]*row["MW"]/ 24.45
+    elif row["UNIT_DESC"] == "MICROGRAMS PER CUBIC METER" :
+      return row["EXPOSURE_CONCENTRATION"]/1000
+    elif row["UNIT_DESC"] == "MICROGRAM PER LITER" :
+      return row["EXPOSURE_CONCENTRATION"]
+    elif row["UNIT_DESC"] == "MILLIGRAMS PER LITER" :
+      return row["EXPOSURE_CONCENTRATION"]/1000
+    elif row["UNIT_DESC"] == "MILLIGRAMS PER CUBIC METER" :
+      return row["EXPOSURE_CONCENTRATION"]
+    elif row["UNIT_DESC"] == "DECIBEL" :
+      return row["EXPOSURE_CONCENTRATION"]
+    else:
+        val= "NA"
+
+Noise['CONC_CONVERTED'] = Noise.apply(my_function, axis=1)
+
+# Adjust labels of EXPOSURE_CONCENTRATION units (UNIT_DESC)
+# Define function to assign labels corresponding to converted units
+def f(row):
+    if   row['UNIT_DESC'] == 'PERCENT':
+        val = 'DECIBEL'
+    elif row['UNIT_DESC']== 'DECIBEL ON THE A WEIGHTED SCALE':
+        val= 'DECIBEL'
+    elif row['UNIT_DESC']== 'DECIBEL':
+        val= 'DECIBEL'
+    else:
+        val = 'MILLIGRAMS PER CUBIC METER'
+    return val
+
+# Create new column 'NOISE_PEL_OR_AL' using the function above
+Noise['UNIT_CONVERTED'] = Noise.apply(f, axis=1)
